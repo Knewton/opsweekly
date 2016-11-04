@@ -41,14 +41,42 @@ function getOnCallNotifications($name, $global_config, $team_config, $start, $en
     $password = $global_config['password'];
     $apikey = $global_config['apikey'];
     $service_id = $team_config['pagerduty_service_id'];
+    $escalation_policy_id = $team_config['pagerduty_escalation_policy_id'];
 
     if ($base_url !== '' && $username !== '' && $password !== '' && $service_id !== '') {
       // convert single PagerDuty service, to array construct in order to hold multiple services.
       if (!is_array($service_id)) {
-        $service_id = array($service_id);
+        if (strlen($service_id) > 0) {
+          $service_id = array($service_id);
+        } else {
+          $service_id = array();
+        }
       }
 
-      // loop through all PagerDuty services
+      if (!is_array($escalation_policy_id)) {
+        if (strlen($escalation_policy_id) > 0) {
+          $escalation_policy_id = array($escalation_policy_id);
+        } else {
+          $escalation_policy_id = array();
+        }
+      }
+
+      // loop through the escalation policies and get all of the services
+      foreach ($escalation_policy_id as $eid) {
+        $escalation_policy_json = doPagerdutyAPICall('/escalation_policies/PO9PDSW', array(),
+                $base_url, $username, $password, $apikey);
+        if (!$escalation_policy = json_decode($escalation_policy_json)) {
+            return 'Could not retrieve escalation policy from Pagerduty! Please check your login detail';
+        }
+
+        $services = $escalation_policy->escalation_policy->services;
+        foreach ($services as $service) {
+            array_push($service_id, $service->id);
+        }
+      }
+
+      // deduplicate and sanitize ids
+      $valid_sids = array();
       foreach ($service_id as $sid) {
         // check if the service id is formated correctly
         if (!sanitizePagerDutyServiceId($sid)) {
@@ -57,68 +85,75 @@ function getOnCallNotifications($name, $global_config, $team_config, $start, $en
             continue;
         }
 
-	// loop through PagerDuty's maximum incidents count per API request.
-        $running_total = 0;
-        do {
-	    // Connect to the Pagerduty API and collect all incidents in the time period.
-	    $parameters = array(
-		'since' => date('c', $start),
-		'service' => $sid,
-		'until' => date('c', $end),
-		'offset' => $running_total,
-	    );
-
-	    $incident_json = doPagerdutyAPICall('/incidents', $parameters, $base_url, $username, $password, $apikey);
-	    if (!$incidents = json_decode($incident_json)) {
-		return 'Could not retrieve incidents from Pagerduty! Please check your login details';
-	    }
-	    // skip if no incidents are recorded
-	    if (count($incidents->incidents) == 0) {
-                continue;
-	    }
-	    logline("Incidents on Service ID: " . $sid);
-	    logline("Total incidents: " . $incidents->total);
-	    logline("Limit in this request: " . $incidents->limit);
-	    logline("Offset: " . $incidents->offset);
-
-	    $running_total += count($incidents->incidents);
-
-	    logline("Running total: " . $running_total);
-	    foreach ($incidents->incidents as $incident) {
-		$time = strtotime($incident->created_on);
-		$state = $incident->urgency;
-
-		// try to determine and set the service
-		if (isset($incident->trigger_summary_data->subject)) {
-		  $service = $incident->trigger_summary_data->subject;
-		} elseif (isset($incident->trigger_summary_data->SERVICEDESC)) {
-		  $service = $incident->trigger_summary_data->SERVICEDESC;
-		} else {
-		  $service = "unknown";
-		}
-
-		$output = $incident->trigger_details_html_url;
-		$output .= "\n";
-
-		// Add to the output all the trigger_summary_data info
-		foreach ($incident->trigger_summary_data as $key => $key_data) {
-		  $output .= "$key: $key_data\n";
-		}
-
-		$output .= $incident->url;
-
-		// try to determine the hostname
-		if (isset($incident->trigger_summary_data->HOSTNAME)) {
-		  $hostname = $incident->trigger_summary_data->HOSTNAME;
-		} else {
-		  // fallback is to just say it was pagerduty that sent it in
-		  $hostname = "Pagerduty";
-		}
-
-		$notifications[] = array("time" => $time, "hostname" => $hostname, "service" => $service, "output" => $output, "state" => "$state");
-	    }
-        } while ($running_total < $incidents->total);
+        // using an associcative array as a simulated set to deduplicate
+        $valid_sids[$sid] = 1;
       }
+
+      $service_ids_to_query = array_keys($valid_sids);
+
+      // loop through PagerDuty's maximum incidents count per API request.
+      $running_total = 0;
+      do {
+          // Connect to the Pagerduty API and collect all incidents in the time period.
+          $parameters = array(
+          'since' => date('c', $start),
+          'service' => $service_ids_to_query,
+          'until' => date('c', $end),
+          'offset' => $running_total,
+          );
+
+          $incident_json = doPagerdutyAPICall('/incidents', $parameters, $base_url, $username, $password, $apikey);
+          if (!$incidents = json_decode($incident_json)) {
+              return 'Could not retrieve incidents from Pagerduty! Please check your login details';
+          }
+          // skip if no incidents are recorded
+          if (count($incidents->incidents) == 0) {
+              continue;
+          }
+
+          logline("Incidents on Service ID: " . $sid);
+          logline("Total incidents: " . $incidents->total);
+          logline("Limit in this request: " . $incidents->limit);
+          logline("Offset: " . $incidents->offset);
+
+          $running_total += count($incidents->incidents);
+
+          logline("Running total: " . $running_total);
+          foreach ($incidents->incidents as $incident) {
+              $time = strtotime($incident->created_on);
+              $state = $incident->urgency;
+
+              // try to determine and set the service
+              if (isset($incident->trigger_summary_data->subject)) {
+                  $service = $incident->trigger_summary_data->subject;
+              } elseif (isset($incident->trigger_summary_data->SERVICEDESC)) {
+                  $service = $incident->trigger_summary_data->SERVICEDESC;
+              } else {
+                  $service = "unknown";
+              }
+
+              $output = $incident->trigger_details_html_url;
+              $output .= "\n";
+
+              // Add to the output all the trigger_summary_data info
+              foreach ($incident->trigger_summary_data as $key => $key_data) {
+                  $output .= "$key: $key_data\n";
+              }
+
+              $output .= $incident->url;
+
+              // try to determine the hostname
+              if (isset($incident->trigger_summary_data->HOSTNAME)) {
+                  $hostname = $incident->trigger_summary_data->HOSTNAME;
+              } else {
+                  // fallback is to just say it was pagerduty that sent it in
+                  $hostname = "Pagerduty";
+              }
+
+              $notifications[] = array("time" => $time, "hostname" => $hostname, "service" => $service, "output" => $output, "state" => "$state");
+          }
+      } while ($running_total < $incidents->total);
+
       // if no incidents are reported, don't generate the table
       if (count($notifications) == 0 ) {
         return array();
@@ -154,6 +189,11 @@ function doPagerdutyAPICall($path, $parameters, $pagerduty_baseurl, $pagerduty_u
         } else {
             $params = '?';
         }
+
+        if (is_array($value)) {
+            $value = implode(',', $value);
+        }
+
         $params .= sprintf('%s=%s', $key, $value);
     }
     return file_get_contents($pagerduty_baseurl . $path . $params, false, $context);
