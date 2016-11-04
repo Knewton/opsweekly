@@ -122,15 +122,7 @@ function getOnCallNotifications($name, $global_config, $team_config, $start, $en
           foreach ($incidents->incidents as $incident) {
               $time = strtotime($incident->created_on);
               $state = $incident->urgency;
-
-              // try to determine and set the service
-              if (isset($incident->trigger_summary_data->subject)) {
-                  $service = $incident->trigger_summary_data->subject;
-              } elseif (isset($incident->trigger_summary_data->SERVICEDESC)) {
-                  $service = $incident->trigger_summary_data->SERVICEDESC;
-              } else {
-                  $service = "unknown";
-              }
+              $service = $incident->service->name;
 
               $output = $incident->trigger_details_html_url;
               $output .= "\n";
