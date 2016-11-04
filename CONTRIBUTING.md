@@ -19,3 +19,28 @@ like this:
 % composer install
 % ./vendor/bin/phpunit tests/*
 ```
+
+## Running locally
+
+1. Add a secureconfig.php file to the phplib folder with contents like
+
+```
+<?php
+
+// Login details for the MySQL database, where all the data is stored.
+// The empty database schema is stored in opsweekly.sql
+$mysql_credentials = array(
+    "username" => "root",
+    "password" => "insecure"
+);
+
+$pagerduty_credentials = array(
+    "apikey" => "YOUR PD API KEY"
+)
+```
+
+2. Install docker and docker-machine as described at https://confluence.knewton.net/x/7IKTB
+3. Create and start a docker container to host mysql `./bin/setup.sh`
+4. Create and start a docker container hosting the opsweekly website `./bin/run.sh`. This script
+   can also be used to redeploy after making code changes.
+5. Visit http://boot2docker in your browser
