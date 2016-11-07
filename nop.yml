@@ -11,8 +11,7 @@ projects:
         type: http
         port: 41811
         requiredport: 41811
-        publish: true
-        healthcheckpath: /README.md
+        publish: false
     hardware:
       shutdown_grace_period: 30
       memory: 1000.0
@@ -25,7 +24,7 @@ projects:
     environments:
       docker-local:
         sensu: null
-      classicdev-useast1:
+      classicqa-useast1:
         sensu: null
         hardware:
           instance_count: 1

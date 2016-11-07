@@ -1,7 +1,7 @@
 <?php
 
-if (!file_exists('phplib/secureconfig.php')) {
-    die('Cannot find secureconfig.php! It must be in phplib and named secureconfig.php');
+if (!file_exists('/app/configuration/secureconfig.php')) {
+    die('Cannot find secureconfig.php! It must be in /app/configuration and named secureconfig.php');
 }
 
 require_once('/app/configuration/secureconfig.php');

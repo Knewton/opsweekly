@@ -21,4 +21,3 @@ EXPOSE 41811
 COPY src/ /var/www/html/
 COPY config/apache.conf /etc/apache2/sites-enabled/000-default.conf
 COPY config/ports.conf /etc/apache2/ports.conf
-COPY config/secureconfig.php /var/www/html/phplib
