@@ -4,11 +4,11 @@ if (!file_exists('phplib/secureconfig.php')) {
     die('Cannot find secureconfig.php! It must be in phplib and named secureconfig.php');
 }
 
-require_once('secureconfig.php');
+require_once('/app/configuration/secureconfig.php');
 
 // Login details for the MySQL database, where all the data is stored.
 // The empty database schema is stored in opsweekly.sql
-$mysql_host = "mysql";
+$mysql_host = $mysql_credentials['hostname'];
 $mysql_user = $mysql_credentials['username'];
 $mysql_pass = $mysql_credentials['password'];
 
@@ -52,7 +52,7 @@ function getUsername() {
  *          e.g. Match this to Pagerduty if you use that for scheduling.
  **/
 $teams = array(
-    "boot2docker" => array(
+    "boot2docker:41811" => array(
         "display_name" => "Learn Team",
         "email_report_to" => "learn-team-eng@knewton.com",
         "database" => "opsweekly",
@@ -66,6 +66,38 @@ $teams = array(
             "timezone" => "America/New_York",
             "start" => "tuesday 12:00",
             "end" => "tuesday 12:00",
+        ),
+    ),
+    "learn-oncall.knewton.net" => array(
+        "display_name" => "Learn Team",
+        "email_report_to" => "learn-team-eng@knewton.com",
+        "database" => "opsweeklylearn",
+        "event_versioning" => "off",
+        "weekly_hints" => array(),
+        "oncall" => array(
+            "provider" => "pagerduty",
+            "provider_options" => array(
+                "pagerduty_escalation_policy_id" => "PO9PDSW"
+            ),
+            "timezone" => "America/New_York",
+            "start" => "tuesday 12:00",
+            "end" => "tuesday 12:00",
+        ),
+    ),
+    "systems-oncall.knewton.net" => array(
+        "display_name" => "Systems Team",
+        "email_report_to" => "systems@knewton.com",
+        "database" => "systems_team",
+        "event_versioning" => "off",
+        "weekly_hints" => array(),
+        "oncall" => array(
+            "provider" => "pagerduty",
+            "provider_options" => array(
+                "pagerduty_escalation_policy_id" => "PJSPASA"
+            ),
+            "timezone" => "America/New_York",
+            "start" => "friday 10:00",
+            "end" => "friday 10:00",
         ),
     )
 );
