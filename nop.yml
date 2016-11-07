@@ -1,0 +1,31 @@
+base_version: 0.1
+projects:
+  opsweekly:
+    style: docker
+    docker:
+      commands:
+        metricproxy:
+          command: '/usr/sbin/apache2ctl -D FOREGROUND'
+    endpoints:
+      http:
+        type: http
+        port: 41811
+        requiredport: 41811
+        publish: true
+        healthcheckpath: /README.md
+    hardware:
+      shutdown_grace_period: 30
+      memory: 1000.0
+      cpu_units: 1.0
+      instance_count: 3
+    credential_files:
+      database:
+        source: opsweekly/secureconfig.php
+        dest: secureconfig.php
+    environments:
+      docker-local:
+        sensu: null
+      classicdev-useast1:
+        sensu: null
+        hardware:
+          instance_count: 1
