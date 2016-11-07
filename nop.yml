@@ -11,7 +11,8 @@ projects:
         type: http
         port: 41811
         requiredport: 41811
-        publish: false
+        publish: true
+        healthcheckpath: /README.md
     hardware:
       shutdown_grace_period: 30
       memory: 1000.0
