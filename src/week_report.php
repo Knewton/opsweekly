@@ -25,21 +25,6 @@
         ?>
         <br />
 
-        <h3>Top Notifying Hosts</h3>
-        <p>Hosts that received the most notifications during this week</p>
-        <table class="table table-striped table-bordered table-hover">
-        <thead>
-            <tr>
-            <th>Hostname</th><th>Count</th>
-            </tr>
-        </thead>
-        <tbody> 
-        <?php
-            echo renderTopNTableBody($week_top_host_agg, 10, 'host');
-        ?>
-        </tbody>
-        </table>
-
         <h3>Top Notifying Services</h3>
         <p>Services that received the most notifications during this week</p>
         <table class="table table-striped table-bordered table-hover">
@@ -48,7 +33,7 @@
             <th>Service</th><th>Count</th>
             </tr>
         </thead>
-        <tbody> 
+        <tbody>
         <?php
             echo renderTopNTableBody($week_top_service_agg, 10, 'service');
         ?>

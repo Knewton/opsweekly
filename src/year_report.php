@@ -1,7 +1,7 @@
 <div class="row">
     <div class="span12">
         <h2>Overall stats <small> for last year </small></h2>
-        <p class='lead'><?php echo $year_total_notifications; ?> notifications received this year 
+        <p class='lead'><?php echo $year_total_notifications; ?> notifications received this year
             over <?php echo $num_weeks; ?> weeks of data (average of <?php echo $week_avg; ?> per week)<br>
             Most pages in one week: <?php echo $year_week_most_pages; ?><br>
             Fewest pages in one week: <?php echo $year_week_fewest_pages; ?></p>
@@ -28,26 +28,6 @@
         ?>
         <br />
 
-        <h3>Top Notifying Hosts</h3>
-        <p>Hosts that received the most notifications during this year</p>
-        <table class="table table-striped table-bordered table-hover">
-        <thead>
-            <tr>
-            <th>Hostname</th><th>Count</th>
-            </tr>
-        </thead>
-        <tbody> 
-        <?php
-            echo renderTopNTableBody($year_top_host_agg, 10, 'host');
-        ?>
-        </tbody>
-        </table>
-        <?php if (count($year_top_waking_host) > 1) { ?>
-        <p>The top 5 hosts that woke people up were:
-            <?php echo renderTopNPrettyLine($year_top_waking_host) ?>
-        </p>
-        <?php } ?>
-
         <h3>Top Notifying Services</h3>
         <p>Services that received the most notifications during this year</p>
         <table class="table table-striped table-bordered table-hover">
@@ -56,7 +36,7 @@
             <th>Service</th><th>Count</th>
             </tr>
         </thead>
-        <tbody> 
+        <tbody>
         <?php
             echo renderTopNTableBody($year_top_service_agg, 10, 'service');
         ?>

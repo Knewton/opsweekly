@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 // Handle a time period requested other than now
 $time_requested = (isset($_GET['date'])) ? $_GET['date'] : "now";
@@ -21,7 +21,7 @@ $oncall_end_ts = $oncall_start_end[1];
     <table class="table table-striped table-bordered table-hover">
     <thead>
         <tr>
-        <th>Date/Time</th><th>Host</th><th>Service</th><th>Output</th><th>State</th><th>Bulk Change</th><th>Hide Event?</th>
+        <th>Date/Time</th><th>Service</th><th>Output</th><th>State</th><th>Bulk Change</th><th>Hide Event?</th>
         </tr>
     </thead>
     <tbody>
