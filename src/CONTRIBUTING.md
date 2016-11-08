@@ -21,26 +21,27 @@ like this:
 ```
 
 ## Running locally
+1. Install docker and docker-machine as described [here](https://confluence.knewton.net/x/7IKTB).
+2. Build the project.
 
-1. Add a secureconfig.php file to the phplib folder with contents like
+    ```nop p b```
 
-```
-<?php
+3. Setup aws credential environment variables. These will be used by nop to download our database
+and pagerduty credentials. Run the export commands output by the command:
 
-// Login details for the MySQL database, where all the data is stored.
-// The empty database schema is stored in opsweekly.sql
-$mysql_credentials = array(
-    "username" => "root",
-    "password" => "insecure"
-);
+    ```kva aws -p dev s3r```
 
-$pagerduty_credentials = array(
-    "apikey" => "YOUR PD API KEY"
-)
-```
+4. Start opsweekly with dependencies in docker-local.
 
-2. Install docker and docker-machine as described at https://confluence.knewton.net/x/7IKTB
-3. Create and start a docker container to host mysql `./bin/setup.sh`
-4. Create and start a docker container hosting the opsweekly website `./bin/run.sh`. This script
-   can also be used to redeploy after making code changes.
-5. Visit http://boot2docker in your browser
+    ```nop p u -d docker-local```
+
+5. Manually create the sql schema for the mysql database.
+
+    ```mysql -u root --password=insecure -h boot2docker opsweekly < opsweekly.sq```
+
+6. Start opsweekly again, this time specifying aws environment keys and not re-launching
+dependencies.
+
+    ```nop p u docker-local --pass-aws-env-vars```
+
+7. Visit [http://boot2docker:41811](http://boot2docker:41811) in your browser.

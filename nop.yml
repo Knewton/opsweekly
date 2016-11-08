@@ -25,6 +25,14 @@ projects:
     environments:
       docker-local:
         sensu: null
+        dependencies:
+          mysql:
+            image: mysql:latest
+            ports:
+              - 3306
+            args:
+              - -e MYSQL_ROOT_PASSWORD=insecure
+              - -e MYSQL_DATABASE=opsweekly
       classicqa-useast1:
         sensu: null
         hardware:
