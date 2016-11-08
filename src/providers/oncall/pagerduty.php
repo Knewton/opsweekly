@@ -63,7 +63,7 @@ function getOnCallNotifications($name, $global_config, $team_config, $start, $en
 
       // loop through the escalation policies and get all of the services
       foreach ($escalation_policy_id as $eid) {
-        $escalation_policy_json = doPagerdutyAPICall('/escalation_policies/PO9PDSW', array(),
+        $escalation_policy_json = doPagerdutyAPICall("/escalation_policies/$eid", array(),
                 $base_url, $username, $password, $apikey);
         if (!$escalation_policy = json_decode($escalation_policy_json)) {
             return 'Could not retrieve escalation policy from Pagerduty! Please check your login detail';
