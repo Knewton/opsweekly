@@ -68,7 +68,7 @@ function printOnCallNotifications($on_call_name, $start, $end, $oncall_start, $o
         }
     }
 
-    // Data collection complete. Time to render the form items for report submission. 
+    // Data collection complete. Time to render the form items for report submission.
 
     // First, we populate the field with the on call ranges so the report is saved with the correct timestamp
     $html = "<input type='hidden' name='oncall[range_start]' value='{$range_start}'>";
@@ -103,7 +103,7 @@ function printOnCallNotifications($on_call_name, $start, $end, $oncall_start, $o
             // Determine if we need to display a checked box for a hidden event.
             $hide_checked = $n['hide_event'] ? "checked" : "";
 
-            $pretty_date = date("D d M H:i:s T", $n['time']);
+            $pretty_date = date("Y-m-d H:i:s T", $n['time']);
             if ($n['hide_event']) {
                 $html .= "<tr class='hiddenEvent' style='display:none'>";
             } else {
@@ -146,5 +146,5 @@ function printOnCallNotifications($on_call_name, $start, $end, $oncall_start, $o
     }
     date_default_timezone_set("UTC");
 
-    return $html; 
+    return $html;
 }
