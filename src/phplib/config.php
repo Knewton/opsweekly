@@ -53,8 +53,8 @@ function getUsername() {
  **/
 $teams = array(
     "boot2docker:41811" => array(
-        "display_name" => "Learn Team",
-        "email_report_to" => "learn-team-eng@knewton.com",
+        "display_name" => "Knewton Test ",
+        "email_report_to" => "mendy.berkowitz@knewton.com",
         "database" => "opsweekly",
         "event_versioning" => "off",
         "weekly_hints" => array(),

@@ -1,7 +1,7 @@
 FROM docker.knewton.net/nopbase:stable
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
-    apache2 php5 php5-mysql php5-curl
+    apache2 php5 php5-mysql php5-curl sendmail
 
 # Enable apache mods.
 RUN a2enmod php5 && a2enmod authnz_ldap && a2enmod ldap
