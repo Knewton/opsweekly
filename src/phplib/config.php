@@ -84,6 +84,38 @@ $teams = array(
             "end" => "tuesday 12:00",
         ),
     ),
+    "teach-oncall.knewton.net" => array(
+        "display_name" => "Teach Team",
+        "email_report_to" => "teach-team-eng@knewton.com",
+        "database" => "opsweeklyteach",
+        "event_versioning" => "off",
+        "weekly_hints" => array(),
+        "oncall" => array(
+            "provider" => "pagerduty",
+            "provider_options" => array(
+                "pagerduty_escalation_policy_id" => "PVCHSK9"
+            ),
+            "timezone" => "America/New_York",
+            "start" => "tuesday 12:00",
+            "end" => "tuesday 12:00",
+        ),
+    ),
+    "content-oncall.knewton.net" => array(
+        "display_name" => "Content Team",
+        "email_report_to" => "content-team-eng@knewton.com",
+        "database" => "opsweeklycontent",
+        "event_versioning" => "off",
+        "weekly_hints" => array(),
+        "oncall" => array(
+            "provider" => "pagerduty",
+            "provider_options" => array(
+                "pagerduty_escalation_policy_id" => "PFJ5HOQ"
+            ),
+            "timezone" => "America/New_York",
+            "start" => "tuesday 12:00",
+            "end" => "tuesday 12:00",
+        ),
+    ),
     "systems-oncall.knewton.net" => array(
         "display_name" => "Systems Team",
         "email_report_to" => "systems@knewton.com",
