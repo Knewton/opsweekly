@@ -129,7 +129,9 @@ function getOnCallNotifications($name, $global_config, $team_config, $start, $en
 
               // Add to the output all the trigger_summary_data info
               foreach ($incident->trigger_summary_data as $key => $key_data) {
-                  $output .= "$key: $key_data\n";
+                  if (is_string($key_data)) {
+                      $output .= "$key: $key_data\n";
+                  }
               }
 
               $output .= $incident->url;
