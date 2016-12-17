@@ -40,7 +40,9 @@ $oncall_end_ts = $oncall_start_end[1];
         <option>Bulk Change Tags</option>
     <?php
         foreach ($nagios_alert_tags as $tag => $tag_name) {
-            echo "<option value='{$tag}'{$selected}>{$tag_name}</option>";
+            if ($nagios_alert_tag_enabled_map[$tag]) {
+                echo "<option value='{$tag}'{$selected}>{$tag_name}</option>";
+            }
         }
     ?>
     </select>

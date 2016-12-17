@@ -4,7 +4,7 @@
 // configuration.
 
 function printOnCallNotifications($on_call_name, $start, $end, $oncall_start, $oncall_end) {
-    global $nagios_state_to_badge, $nagios_alert_tags;
+    global $nagios_state_to_badge, $nagios_alert_tags, $nagios_alert_tag_enabled_map;
 
     # Non timezone version to store the data
     $range_start = $start;
@@ -135,7 +135,9 @@ function printOnCallNotifications($on_call_name, $start, $end, $oncall_start, $o
             foreach ($nagios_alert_tags as $tag => $tag_name) {
                 //$selected = ($tag == $previous_tag) ? " selected" : "";
                 $selected = ($tag == $n['tag']) ? " selected" : "";
-                $html .= "<option value='{$tag}'{$selected}>{$tag_name}</option>";
+                if ($nagios_alert_tag_enabled_map[$tag]) {
+                    $html .= "<option value='{$tag}'{$selected}>{$tag_name}</option>";
+                }
             }
             $html .= "</select></td>";
             $html .= "<td colspan='5'><div class='control-group'><label class='control-label'><b>Notes:</b> </label>

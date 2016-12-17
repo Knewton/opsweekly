@@ -16,14 +16,55 @@ $pages = array("/index.php" => "Overview", "/add.php" => "Add", "/report.php" =>
 $pages_icon = array("/index.php" => "icon-home", "/add.php" => "icon-plus-sign", "/report.php" => "icon-list-alt", "/meeting.php" => "icon-bullhorn");
 $nagios_state_to_badge = array("WARNING" => "warning", "CRITICAL" => "important", "UNKNOWN" => "info", "DOWN" => "inverse", "OK" => "success");
 $nagios_state_to_bar = array("WARNING" => "warning", "CRITICAL" => "danger", "UNKNOWN" => "info", "OK" => "success");
-$tag_to_badge = array("action" => "success", "noaction" => "important", "" => "default");
-$nagios_alert_tags = array("" => "Untagged", "issue" => "Action Taken: Service Issue (View clean)", "issuetimeperiod" => "Action Taken: Service Issue, timeperiod inappropriate (View clean)",
-    "viewissue" => "Action Taken: View issue (network/site outage, service health questionable)", "incorrecttimeperiod" => "No Action Taken: Timeperiod not appropriate",
-    "downtimeexpired" => "No Action Taken: Work ongoing, downtime expired", "downtimenotset" => "No Action Taken: Work ongoing, downtime not set",
-    "thresholdincorrect" => "No Action Taken: Threshold adjustment required", "checkfaulty" => "No Action Taken: Check is faulty/requires modification", "na" => "N/A");
-$nagios_tag_categories = array("" => "Untagged", "action" => "Action Taken", "noaction" => "No Action Taken");
-$nagios_tag_category_map = array("issue" => "action", "issuetimeperiod" => "action", "viewissue" => "action", "incorrecttimeperiod" => "noaction",
-    "downtimeexpired" => "noaction", "downtimenotset" => "noaction", "thresholdincorrect" => "noaction", "checkfaulty" => "noaction");
+$tag_to_badge = array("action" => "success", "actionsuboptimal" => "warning", "noaction" => "important", "redundant" => "important", "" => "default");
+$nagios_alert_tags = array(
+    "" => "Untagged",
+    "issue" => "Action Taken: Service Issue",
+    "issueurgency" => "Action Taken: Service Issue - Inappropriate Urgency",
+    "issuevisibility" => "Action Taken: Service Issue - Insufficient Docs or Visibility",
+    "issueredundant" => "Redundant alert",
+    "downtime" => "No Action Taken: Scheduled Maintenance",
+    "thresholdincorrect" => "No Action Taken: Threshold adjustment required",
+    "checkfaulty" => "No Action Taken: Check is faulty/requires modification",
+    // vv deprecated tags vv
+    "viewissue" => "Action Taken: Insufficient Docs or Visibility",
+    "issuetimeperiod" => "Action Taken: Service Issue - Inappropriate Urgency",
+    "incorrecttimeperiod" => "No Action Taken: Inappropriate Urgency",
+    "downtimeexpired" => "No Action Taken: Scheduled Maintenance",
+    "downtimenotset" => "No Action Taken: Scheduled Maintenance",
+    "na" => "N/A");
+$nagios_tag_categories = array("" => "Untagged", "action" => "Action Taken", "actionsuboptimal" => "Action Taken, Needs Improvement", "noaction" => "No Action Taken", "redundant" => "Redundant");
+$nagios_tag_category_map = array(
+    "issue" => "action",
+    "issueurgency" => "actionsuboptimal",
+    "issuevisibility" => "actionsuboptimal",
+    "issueredundant" => "redundant",
+    "downtime" => "noaction",
+    "thresholdincorrect" => "noaction",
+    "checkfaulty" => "noaction",
+    // vv deprecated tags vv
+    "viewissue" => "actionsuboptimal",
+    "issuetimeperiod" => "actionsuboptimal",
+    "incorrecttimeperiod" => "noaction",
+    "downtimeexpired" => "noaction",
+    "downtimenotset" => "noaction",
+    "na" => "");
+$nagios_alert_tag_enabled_map = array(
+    "" => true,
+    "issue" => true,
+    "issueurgency" => true,
+    "issuevisibility" => true,
+    "issueredundant" => true,
+    "downtime" => true,
+    "thresholdincorrect" => true,
+    "checkfaulty" => true,
+    "viewissue" => false,
+    "issuetimeperiod" => false,
+    "incorrecttimeperiod" => false,
+    "downtimeexpired" => false,
+    "downtimenotset" => false,
+    "na" => false);
+
 $locales = array("UK" => "Europe/London", "ET" => "America/New_York", "PT" => "America/Los_Angeles");
 $sleep_states = array(-1 => "Unknown", 0 => "Awake", 1 => "Asleep");
 $sleep_state_icons = array(0 => "icon-eye-open", 1 => "icon-eye-close");
