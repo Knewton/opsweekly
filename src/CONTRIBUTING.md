@@ -37,7 +37,7 @@ and pagerduty credentials. Run the export commands output by the command:
 
 5. Manually create the sql schema for the mysql database.
 
-    ```mysql -u root --password=insecure -h boot2docker opsweekly < opsweekly.sq```
+    ```mysql -u root --password=insecure -h boot2docker opsweekly < src/opsweekly.sql```
 
 6. Start opsweekly again, this time specifying aws environment keys and not re-launching
 dependencies.
