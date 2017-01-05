@@ -12,8 +12,8 @@
 We'll do our best to get your changes in!
 
 ## How to run tests
-The tests are written for phpunit which is installed via composer. Run them
-like this:
+The tests are written for phpunit which is installed via composer. Install composer following
+the instructions [here](https://getcomposer.org/download/). Run the tests like this:
 
 ```
 % composer install

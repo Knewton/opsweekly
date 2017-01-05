@@ -2,3 +2,4 @@ phplib/secureconfig.php
 vendor
 .idea
 .nop
+src/composer
