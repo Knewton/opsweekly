@@ -33,6 +33,7 @@
  *    - service: Contains the service name or a description of the problem. Must be populated. Perhaps use "Host Check" for host alerts.
  *    - output: The plugin output, e.g. from Nagios, describing the issue so the user can reference easily/remember issue
  *    - state: The level of the problem. One of: CRITICAL, WARNING, UNKNOWN, DOWN
+ *    - notes: Concatenation of the notes attached to the pd incident
  */
 
 function getOnCallNotifications($name, $global_config, $team_config, $start, $end) {
@@ -144,7 +145,19 @@ function getOnCallNotifications($name, $global_config, $team_config, $start, $en
                   $hostname = "Pagerduty";
               }
 
-              $notifications[] = array("time" => $time, "hostname" => $hostname, "service" => $service, "output" => $output, "state" => "$state");
+              // Retrieve notes for the incident
+              $notes_json = doPagerdutyAPICall("/incidents/{$incident->id}/notes", array(),
+                    $base_url, $username, $password, $apikey);
+              $notes_content = "";
+              if (!$notes = json_decode($notes_json)) {
+                  logline("Could not retrieve notes from Pagerduty!");
+              } else {
+                  foreach ($notes->notes as $note) {
+                      $notes_content .= "[{$note->created_at}] {$note->content}   ";
+                  }
+              }
+
+              $notifications[] = array("time" => $time, "hostname" => $hostname, "service" => $service, "output" => $output, "state" => "$state", "notes" => $notes_content);
           }
       } while ($running_total < $incidents->total);
 
