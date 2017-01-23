@@ -112,7 +112,7 @@ function getOnCallNotifications($name, $global_config, $team_config, $start, $en
               continue;
           }
 
-          logline("Incidents on Service ID: " . $sid);
+          logline("Incidents on Service IDs: " . implode(", ", $service_ids_to_query));
           logline("Total incidents: " . $incidents->total);
           logline("Limit in this request: " . $incidents->limit);
           logline("Offset: " . $incidents->offset);
@@ -149,14 +149,17 @@ function getOnCallNotifications($name, $global_config, $team_config, $start, $en
               $notes_json = doPagerdutyAPICall("/incidents/{$incident->id}/notes", array(),
                     $base_url, $username, $password, $apikey);
               $notes_content = "";
-              if (!$notes = json_decode($notes_json)) {
+              if ($notes_json === false || !$notes = json_decode($notes_json)) {
                   logline("Could not retrieve notes from Pagerduty!");
               } else {
+                  $num_notes = count($notes->notes);
+                  logline("Found {$num_notes} notes on incident {$incident->id}.");
                   foreach ($notes->notes as $note) {
                       $notes_content .= "[{$note->created_at}] {$note->content}   ";
                   }
               }
 
+              logline("Adding data for incident {$incident->id} to notifications");
               $notifications[] = array("time" => $time, "hostname" => $hostname, "service" => $service, "output" => $output, "state" => "$state", "notes" => $notes_content);
           }
       } while ($running_total < $incidents->total);
@@ -203,7 +206,13 @@ function doPagerdutyAPICall($path, $parameters, $pagerduty_baseurl, $pagerduty_u
 
         $params .= sprintf('%s=%s', $key, $value);
     }
-    return file_get_contents($pagerduty_baseurl . $path . $params, false, $context);
+    $contents = file_get_contents($pagerduty_baseurl . $path . $params, false, $context);
+    if ($contents === false) {
+        $headers = var_export($http_response_header, true);
+        logline("PD API request failed. \n{$headers}");
+    }
+
+    return $contents;
 }
 
 function whoIsOnCall($schedule_id, $time = null) {
