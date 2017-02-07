@@ -93,7 +93,7 @@ $teams = array(
         "oncall" => array(
             "provider" => "pagerduty",
             "provider_options" => array(
-                "pagerduty_escalation_policy_id" => "PVCHSK9"
+                "pagerduty_escalation_policy_id" => array("PVCHSK9", "PVFGS0F")
             ),
             "timezone" => "America/New_York",
             "start" => "tuesday 12:00",
